@@ -1,0 +1,87 @@
+buildscript {
+    ext.spring_boot_version = '1.5.7.RELEASE'
+    ext.spring_version = '4.3.11.RELEASE'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+        classpath "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/kotlin/exposed' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-spring'
+
+sourceSets {
+    main {
+        resources {
+            srcDir "../config/dev"
+        }
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.9.0"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.0"
+    compile("io.springfox:springfox-swagger2:2.7.0")
+    compile("io.springfox:springfox-swagger-ui:2.7.0")
+    compile fileTree(dir: '../cordapp/build/libs', include: ['cordapp-*.jar'])
+    compile fileTree(dir: '../cordapp-contracts-states/build/libs', include: ['cordapp-contracts-states*.jar'])
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+
+    compile "net.corda:corda-core:$corda_release_version"
+    compile "net.corda:corda-jackson:$corda_release_version"
+    compile "net.corda:corda-rpc:$corda_release_version"
+    compile "net.corda:corda-node-api:$corda_release_version"
+
+    compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
+}
+
+jar {
+    manifest {
+        attributes "Main-Class" : "com.dgkrajnik.bank.server.ServerKt"
+        attributes "Class-Path" : configurations.compile.collect { it.getName() }.join(' ')
+    }
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        languageVersion = "1.2"
+        apiVersion = "1.2"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
+}
+
+task runBODServer(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.dgkrajnik.bank.server.ServerKt'
+    environment "server.port", "8080"
+}
+
+task runBCSServer(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.dgkrajnik.bank.server.ServerKt'
+    environment "server.port", "8081"
+}
