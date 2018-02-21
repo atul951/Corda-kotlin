@@ -8,7 +8,7 @@ As per below diagram:
 
 The BCS Learning corporation is issuing a request to the Bank of Atul and Bank of Atul in response sends a Atul. Atul contains a piece of text called a 'Thought'.
 
-![Diagram](danielcorda.png)
+![Diagram](atulcorda.png)
 
 
 
