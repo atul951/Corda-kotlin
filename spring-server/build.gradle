@@ -56,7 +56,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class" : "com.dgkrajnik.bank.server.ServerKt"
+        attributes "Main-Class" : "com.Atul.bank.server.ServerKt"
         attributes "Class-Path" : configurations.compile.collect { it.getName() }.join(' ')
     }
     // This line of code recursively collects and copies all of a project's files
@@ -76,12 +76,12 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 task runBODServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.dgkrajnik.bank.server.ServerKt'
+    main = 'com.Atul.bank.server.ServerKt'
     environment "server.port", "8080"
 }
 
 task runBCSServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.dgkrajnik.bank.server.ServerKt'
+    main = 'com.Atul.bank.server.ServerKt'
     environment "server.port", "8081"
 }

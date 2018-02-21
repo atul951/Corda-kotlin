@@ -24,10 +24,10 @@ private const val CORDA_RPC_PORT = "config.rpc.port"
  */
 @Component
 open class NodeRPCConnection(
-        @Value("\${$CORDA_NODE_HOST}") host: String,
-        @Value("\${$CORDA_USER_NAME}") username: String,
-        @Value("\${$CORDA_USER_PASSWORD}") password: String,
-        @Value("\${$CORDA_RPC_PORT}") rpcPort: Int) {
+        @Value("\${${CORDA_NODE_HOST}}") host: String,
+        @Value("\${${CORDA_USER_NAME}}") username: String,
+        @Value("\${${CORDA_USER_PASSWORD}}") password: String,
+        @Value("\${${CORDA_RPC_PORT}}") rpcPort: Int) {
 
     val proxy: CordaRPCOps
     

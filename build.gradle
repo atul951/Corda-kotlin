@@ -1,5 +1,4 @@
 buildscript {
-    ext.corda_release_group = 'net.corda'
     ext.corda_release_version = '2.0.0'
     ext.corda_gradle_plugins_version = '1.0.0'
     ext.kotlin_version = '1.2.21'
@@ -64,23 +63,21 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 
     // Corda integration dependencies
-    cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-finance:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-webserver-impl:$corda_release_version"
-    cordaRuntime "$corda_release_group:corda:$corda_release_version"
-    cordaRuntime "$corda_release_group:corda-webserver:$corda_release_version"
+    cordaCompile "net.corda:corda-core:$corda_release_version"
+    cordaCompile "net.corda:corda-finance:$corda_release_version"
+    cordaCompile "net.corda:corda-jackson:$corda_release_version"
+    cordaCompile "net.corda:corda-rpc:$corda_release_version"
+    cordaCompile "net.corda:corda-node-api:$corda_release_version"
+    cordaRuntime "net.corda:corda:$corda_release_version"
 
-    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    cordaCompile "net.corda:corda-node-driver:$corda_release_version"
 
     // CorDapp dependencies
     // Specify your CorDapp's dependencies below, including dependent CorDapps.
     // We've defined Cash as a dependent CorDapp as an example.
     cordapp project(":cordapp")
     cordapp project(":cordapp-contracts-states")
-    cordapp "$corda_release_group:corda-finance:$corda_release_version"
+    cordapp "net.corda:corda-finance:$corda_release_version"
 }
 
 task integrationTest(type: Test, dependsOn: []) {
@@ -108,7 +105,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapps = [
                 "$project.group:cordapp-contracts-states:$project.version",
                 "$project.group:cordapp:$project.version",
-                "$corda_release_group:corda-finance:$corda_release_version"
+                "net.corda:corda-finance:$corda_release_version"
         ]
     }
     node {
@@ -119,30 +116,30 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapps = [
                 "$project.group:cordapp-contracts-states:$project.version",
                 "$project.group:cordapp:$project.version",
-                "$corda_release_group:corda-finance:$corda_release_version"
+                "net.corda:corda-finance:$corda_release_version"
         ]
         rpcUsers = [[ user: "user1", "password": "test", "permissions": [
-                "StartFlow.com.dgkrajnik.bank.AtulIssueRequest",
-                "StartFlow.com.dgkrajnik.bank.AtulMoveRequest"
+                "StartFlow.com.Atul.bank.AtulIssueRequest",
+                "StartFlow.com.Atul.bank.AtulMoveRequest"
         ]]]
     }
     node {
-        name "O=Bank of Atul,L=Delhi,C=India"
+        name "O=Bank of Atul,L=Delhi,C=IN"
         advertisedServices = []
         p2pPort 10008
         rpcPort 10009
         cordapps = [
                 "$project.group:cordapp-contracts-states:$project.version",
                 "$project.group:cordapp:$project.version",
-                "$corda_release_group:corda-finance:$corda_release_version"
+                "net.corda:corda-finance:$corda_release_version"
         ]
         rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
     }
 }
 
-task runTemplateClient(type: JavaExec) {
+task runBankClient(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.template.ClientKt'
+    main = 'com.Atul.bank.ClientKt'
     args 'localhost:10006'
     args findProperty("thought") ?: "AN EMPTY MIND IS AN EMPTY KIND"
 }

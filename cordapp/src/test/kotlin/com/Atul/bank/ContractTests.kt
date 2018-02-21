@@ -1,5 +1,5 @@
-package com.template
-/*
+package com.Atul.bank
+
 import net.corda.testing.*
 import net.corda.testing.setCordappPackages
 import net.corda.testing.unsetCordappPackages
@@ -11,7 +11,7 @@ class ContractTests {
 
     @Before
     fun setup() {
-        setCordappPackages("com.template")
+        setCordappPackages("com.dgkrajnik.bank")
     }
 
     @After
@@ -20,16 +20,24 @@ class ContractTests {
     }
 
     @Test
-    fun `dummy test`() {
-
+    fun `untimed daniel issuance`() {
+        ledger {
+            // This should fail because issuances must be timestamped
+            transaction("UntimedIssuance") {
+                output(ATUL_CONTRACT_ID, "untimeddanny") { getDaniel() }
+                command(MEGA_CORP_PUBKEY) { AtulContract.Commands.Issue() }
+                attachments(ATUL_CONTRACT_ID)
+                fails()
+            }
+        }
     }
 
     @Test
-    fun `unthinking Atul issuance`() {
+    fun `unthinking daniel issuance`() {
         ledger {
             // This should fail because invalid daniels don't have a thought.
             transaction("FailIssuance") {
-                output(ATUL_CONTRACT_ID, "faildanny") { getInvalidAtul() }
+                output(ATUL_CONTRACT_ID, "faildanny") { getInvalidDaniel() }
                 command(MEGA_CORP_PUBKEY) { AtulContract.Commands.Issue() }
                 attachments(ATUL_CONTRACT_ID)
                 timeWindow(TEST_TX_TIME)
@@ -39,25 +47,12 @@ class ContractTests {
     }
 
     @Test
-    fun `untimed Atul issuance`() {
-        ledger {
-            // This should fail because issuances must be timestamped
-            transaction("UntimedIssuance") {
-                output(ATUL_CONTRACT_ID, "untimeddanny") { getAtul() }
-                command(MEGA_CORP_PUBKEY) { AtulContract.Commands.Issue() }
-                attachments(ATUL_CONTRACT_ID)
-                fails()
-            }
-        }
-    }
-
-    @Test
-    fun `chain Atul tweaked double assign`() {
+    fun `chain daniel tweaked double assign`() {
         ledger {
             unverifiedTransaction {
                 attachments(ATUL_CONTRACT_ID)
-                val daniel = getAtul()
-                output(ATUL_CONTRACT_ID, "Atul", Atul)
+                val daniel = getDaniel()
+                output(ATUL_CONTRACT_ID, "daniel", daniel)
             }
 
             transaction("Issuance") {
@@ -70,7 +65,7 @@ class ContractTests {
 
             transaction("Move") {
                 input("testdanny")
-                output(ATUL_CONTRACT_ID, "alice's Atul") { "testdanny".output<AtulState>().withOwner(ALICE) }
+                output(ATUL_CONTRACT_ID, "alice's daniel") { "testdanny".output<AtulState>().withOwner(ALICE) }
                 command(MEGA_CORP_PUBKEY) { AtulContract.Commands.Move() }
                 verifies()
             }
@@ -80,7 +75,7 @@ class ContractTests {
                 transaction {
                     input("testdanny")
                     // We moved a paper to another pubkey.
-                    output(ATUL_CONTRACT_ID, "bob's Atul") { "testdanny".output<AtulState>().withOwner(BOB) }
+                    output(ATUL_CONTRACT_ID, "bob's daniel") { "testdanny".output<AtulState>().withOwner(BOB) }
                     command(MEGA_CORP_PUBKEY) { AtulContract.Commands.Move() }
                     verifies()
                 }
@@ -103,5 +98,4 @@ class ContractTests {
             owner = MEGA_CORP,
             thought = ""
     )
-
-}*/
+}
