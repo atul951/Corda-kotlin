@@ -1,12 +1,12 @@
- # DGK Bank
+ # ATUL Bank
 
 ### Introduction:
-- DGK Bank is a small Corda Network that distribute a asset called DANIEL. 
-- DANIEL is a non fungible asset that contain thoughts.
+- ATUL Bank is a small Corda Network that distribute a asset called Atul. 
+- Atul is a non fungible asset that contain thoughts.
 
 As per below diagram:
 
-The BCS Learning corporation is issuing a request to the Bank of Daniel and Bank of Daniel in response sends a DANIEL. DANIEL contains a piece of text called a 'Thought'.
+The BCS Learning corporation is issuing a request to the Bank of Atul and Bank of Atul in response sends a Atul. Atul contains a piece of text called a 'Thought'.
 
 ![Diagram](danielcorda.png)
 
@@ -69,10 +69,10 @@ gradlew deployNodes
 - To check if the transaction was successful, Run:
 
 ```
-run vaultQuery contractStateType: com.dgkrajnik.bank.DanielState
+run vaultQuery contractStateType: com.Atul.bank.AtulState
 ```
 
-- In the shell of the BCS learning node, and check for a valid DanielState in the output.
+- In the shell of the BCS learning node, and check for a valid AtulState in the output.
 
 
 ### Running the Tests: 
@@ -108,7 +108,7 @@ gradlew test
 ### Author: 
 **Corda Team-** For Template Code 
 
-[**Daniel  Krajnik**](daniel.krajnik@bcstechnology.com.au) -Rest of the work 
+[**ATUL  KUMAR**](atul.kumar@bcstechnology.com.au) -Rest of the work 
  
  
  
