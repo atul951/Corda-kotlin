@@ -16,6 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableSwagger2
 private class ServerStarter {}
 
+
 /**
  * Starts our Spring Boot application.
  */
