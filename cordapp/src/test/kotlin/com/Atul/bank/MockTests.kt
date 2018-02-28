@@ -26,16 +26,16 @@ class ResolveTransactionsFlowTest {
 
     @Before
     fun setup() {
-        setCordappPackages("com.dgkrajnik.bank")
+        setCordappPackages("com.Atul.bank")
         mockNet = MockNetwork()
         notary = mockNet.createNotaryNode(legalName= NOTARY_NAME)
         bod = mockNet.createPartyNode(legalName= BOD_NAME, networkMapAddress=notary.network.myAddress)
         corp = mockNet.createPartyNode(legalName= CORP_NAME, networkMapAddress=notary.network.myAddress)
         invalidIssuer = mockNet.createPartyNode(legalName=CordaX500Name("Thunder Entertainment", "Irvine", "US"), networkMapAddress=notary.network.myAddress)
         mockNet.registerIdentities()
-        bod.internals.registerInitiatedFlow(DanielIssueResponse::class.java)
-        bod.internals.registerInitiatedFlow(DanielMoveResponse::class.java)
-        corp.internals.registerInitiatedFlow(DanielMoveResponse::class.java)
+        bod.internals.registerInitiatedFlow(AtulIssueResponse::class.java)
+        bod.internals.registerInitiatedFlow(AtulMoveResponse::class.java)
+        corp.internals.registerInitiatedFlow(AtulMoveResponse::class.java)
     }
 
     @After
@@ -46,17 +46,17 @@ class ResolveTransactionsFlowTest {
 
     @Test
     fun `simple issuance flow`() {
-        val p = DanielIssueRequest("TEST THOUGHT", bod.info.chooseIdentity())
+        val p = AtulIssueRequest("TEST THOUGHT", bod.info.chooseIdentity())
         val future = corp.services.startFlow(p).resultFuture
         mockNet.runNetwork()
         val results = future.getOrThrow()
-        val ds = results.tx.outputStates[0] as DanielState
+        val ds = results.tx.outputStates[0] as AtulState
         assertEquals("TEST THOUGHT", ds.thought)
     }
 
     @Test
     fun `invalid issuer`() {
-        val p = DanielIssueRequest("TEST THOUGHT", invalidIssuer.info.chooseIdentity())
+        val p = AtulIssueRequest("TEST THOUGHT", invalidIssuer.info.chooseIdentity())
         try {
             val future = corp.services.startFlow(p).resultFuture
             mockNet.runNetwork()
@@ -70,24 +70,24 @@ class ResolveTransactionsFlowTest {
 
     @Test
     fun `simple issue-and-move flow`() {
-        val p = DanielIssueRequest("IF WORK IS ENERGY EXPENDED OVER TIME WHY DON'T WE GET PAID IN CALORIES", bod.info.chooseIdentity())
+        val p = AtulIssueRequest("IF WORK IS ENERGY EXPENDED OVER TIME WHY DON'T WE GET PAID IN CALORIES", bod.info.chooseIdentity())
         val future = corp.services.startFlow(p).resultFuture
         mockNet.runNetwork()
         val results = future.getOrThrow()
-        val ds = results.tx.outputStates[0] as DanielState
+        val ds = results.tx.outputStates[0] as AtulState
         assertEquals("IF WORK IS ENERGY EXPENDED OVER TIME WHY DON'T WE GET PAID IN CALORIES", ds.thought)
 
-        val move = DanielMoveRequest(results.tx.outRef(0), bod.info.chooseIdentity())
+        val move = AtulMoveRequest(results.tx.outRef(0), bod.info.chooseIdentity())
         val moveFuture = corp.services.startFlow(move).resultFuture
         mockNet.runNetwork()
         val moveResults = moveFuture.getOrThrow()
-        val mds = moveResults.tx.outputStates[0] as DanielState
+        val mds = moveResults.tx.outputStates[0] as AtulState
         assertEquals(bod.info.chooseIdentity(), mds.owner)
     }
 
     @Test
     fun `transaction is stored in both parties transaction storage`() {
-        val request = DanielIssueRequest("FOR NAUGHT BUT A THOUGHT", bod.info.chooseIdentity())
+        val request = AtulIssueRequest("FOR NAUGHT BUT A THOUGHT", bod.info.chooseIdentity())
         val future = corp.services.startFlow(request).resultFuture
         mockNet.runNetwork()
         val signedTx = future.getOrThrow()
@@ -98,14 +98,14 @@ class ResolveTransactionsFlowTest {
 
     @Test
     fun `correct DanielState recorded in vault`() {
-        val request = DanielIssueRequest("FOR NAUGHT BUT A THOUGHT", bod.info.chooseIdentity())
+        val request = AtulIssueRequest("FOR NAUGHT BUT A THOUGHT", bod.info.chooseIdentity())
         val future = corp.services.startFlow(request).resultFuture
         mockNet.runNetwork()
         future.getOrThrow()
 
         for(node in listOf(corp, bod)) {
             node.database.transaction {
-                val states = node.services.vaultService.queryBy<DanielState>().states
+                val states = node.services.vaultService.queryBy<AtulState>().states
                 assertEquals(1, states.size)
                 val recordedState = states.single().state.data
                 assertEquals("FOR NAUGHT BUT A THOUGHT", recordedState.thought)
